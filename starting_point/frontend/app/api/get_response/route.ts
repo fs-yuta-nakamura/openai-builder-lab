@@ -1,15 +1,29 @@
+import { SYSTEM_PROMPT } from '@/lib/constants'
+import OpenAI from 'openai'
+
+const client = new OpenAI({
+  apiKey: process.env['OPENAI_API_KEY']
+})
+
 export async function POST(request: Request) {
   const { messages } = await request.json()
 
-  console.log('Incoming messages', messages)
+  const systemMessage = {
+    role: 'developer',
+    content: SYSTEM_PROMPT
+  }
 
   try {
-    await new Promise(resolve => setTimeout(resolve, 2000)) // 2s wait
+    const response = await client.chat.completions.create({
+      messages: [systemMessage, ...messages],
+      model: 'gpt-4o'
+    })
+
+    console.log(response)
     return new Response(
       JSON.stringify({
         role: 'assistant',
-        content:
-          'This is a default message, update the backend to get a response from the OpenAI API instead.'
+        content: response.choices[0].message.content
       })
     )
   } catch (error: any) {
