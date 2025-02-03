@@ -36,11 +36,12 @@ export async function POST(request: Request) {
       completion = await client.chat.completions.create({
         messages: messages,
         tools: tools,
-        model: MODEL
+        model: MODEL,
+        store: true
       })
-    }
 
-    console.log('messages: ', messages)
+      console.log('completion: ', completion)
+    }
 
     return new Response(
       JSON.stringify({
