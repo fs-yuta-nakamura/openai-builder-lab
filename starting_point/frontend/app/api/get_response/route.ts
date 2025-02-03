@@ -1,4 +1,4 @@
-import { SYSTEM_PROMPT } from '@/lib/constants'
+import { MODEL, SYSTEM_PROMPT } from '@/lib/constants'
 import OpenAI from 'openai'
 
 const client = new OpenAI({
@@ -8,18 +8,12 @@ const client = new OpenAI({
 export async function POST(request: Request) {
   const { messages } = await request.json()
 
-  const systemMessage = {
-    role: 'developer',
-    content: SYSTEM_PROMPT
-  }
-
   try {
     const response = await client.chat.completions.create({
-      messages: [systemMessage, ...messages],
-      model: 'gpt-4o'
+      messages: messages,
+      model: MODEL
     })
 
-    console.log(response)
     return new Response(
       JSON.stringify({
         role: 'assistant',
